@@ -1,99 +1,82 @@
-/* ═══════════════════════════════════════
-   NAV.CSS — Fixed Navigation Bar
-═══════════════════════════════════════ */
-
+/* ═══════════════════════════
+   NAV — matches reference exactly
+═══════════════════════════ */
 nav {
   position: fixed;
   top: 0; left: 0; right: 0;
-  z-index: 9999;
-  height: 66px;
-  padding: 0 56px;
+  z-index: 999;
+  height: 64px;
+  padding: 0 40px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: rgba(255, 255, 255, 0.95);
+  background: var(--bg);
   border-bottom: 1px solid var(--border);
-  box-shadow: var(--sh);
 }
 
-/* Brand */
+/* ── Left: dot + name + role ── */
 .nav-brand {
   display: flex;
   align-items: center;
-  gap: 11px;
+  gap: 12px;
   text-decoration: none;
-  cursor: pointer;
 }
-.nav-brand:hover .nav-logo {
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.35);
-  transform: scale(1.05);
-  transition: all .2s;
-}
-.nav-logo {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, var(--blue), var(--teal));
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 800;
-  font-size: .85rem;
-  color: #fff;
-  letter-spacing: .01em;
+.nav-dot {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--teal);
   flex-shrink: 0;
+  transition: transform .22s ease;
 }
+.nav-brand:hover .nav-dot { transform: scale(1.12); }
+.nav-info { display: flex; align-items: baseline; gap: 10px; }
 .nav-name {
+  font-size: .95rem;
   font-weight: 700;
-  font-size: .9rem;
-  color: var(--navy);
+  color: var(--ink);
+  letter-spacing: -.01em;
 }
-.nav-hint {
-  font-size: .68rem;
+.nav-role {
+  font-size: .82rem;
   color: var(--muted);
-  margin-top: 1px;
+  font-weight: 400;
 }
 
-/* Links */
+/* ── Right: pipe-separated links ── */
 .nav-links {
   display: flex;
-  gap: 2px;
+  align-items: center;
   list-style: none;
+  gap: 0;
+}
+.nav-links li {
+  display: flex;
+  align-items: center;
+}
+/* pipe separator */
+.nav-links li + li::before {
+  content: '';
+  display: block;
+  width: 1px;
+  height: 16px;
+  background: var(--border);
 }
 .nav-links a {
-  padding: 7px 13px;
-  border-radius: 7px;
-  font-size: .78rem;
-  font-weight: 600;
-  color: var(--muted);
+  display: block;
+  padding: 4px 18px;
+  font-size: .84rem;
+  font-weight: 400;
+  color: var(--sub);
   text-decoration: none;
-  transition: all .18s;
+  transition: color .18s;
+  letter-spacing: .005em;
 }
 .nav-links a:hover,
-.nav-links a.active {
-  color: var(--blue);
-  background: rgba(37, 99, 235, 0.08);
-}
+.nav-links a.active { color: var(--ink); font-weight: 600; }
 
-/* CTA Button */
-.nav-hire {
-  padding: 9px 20px;
-  border-radius: 8px;
-  background: var(--navy);
-  color: #fff;
-  font-size: .78rem;
-  font-weight: 700;
-  text-decoration: none;
-  transition: all .2s;
-  letter-spacing: .02em;
-}
-.nav-hire:hover {
-  background: var(--blue);
-  box-shadow: 0 4px 14px rgba(37, 99, 235, 0.4);
-}
-
-/* Responsive */
-@media (max-width: 960px) {
-  nav { padding: 0 18px; }
+@media (max-width: 860px) {
+  nav { padding: 0 20px; }
   .nav-links { display: none; }
+  .nav-role { display: none; }
 }

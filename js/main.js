@@ -1,81 +1,38 @@
-/* ═══════════════════════════════════════
-   MAIN.JS — Interactions & Animations
-═══════════════════════════════════════ */
-
 document.addEventListener('DOMContentLoaded', () => {
 
-  /* ─────────────────────────────────────
-     1. SCROLL REVEAL
-     Adds .show to .reveal / .reveal-left
-     elements as they enter the viewport.
-     Stagger delay is applied to siblings.
-  ───────────────────────────────────── */
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (!entry.isIntersecting) return;
-
-      entry.target.classList.add('show');
-
-      // Animate skill bar width once card is visible
-      const bar = entry.target.querySelector('.sk-bar');
-      if (bar) {
-        const pct = entry.target.getAttribute('data-pct');
-        setTimeout(() => {
-          bar.style.width = pct + '%';
-        }, 200);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal, .reveal-left').forEach((el) => {
-    // Apply staggered delay to items that share the same parent container
-    const parent = el.parentElement;
-    const siblings = parent.querySelectorAll('.reveal, .reveal-left');
-    if (siblings.length > 1) {
-      const idx = Array.from(siblings).indexOf(el);
-      el.style.transitionDelay = (idx * 0.1) + 's';
-    }
-    revealObserver.observe(el);
-  });
-
-
-  /* ─────────────────────────────────────
-     2. ACTIVE NAV LINK ON SCROLL
-     Highlights the nav link corresponding
-     to the section currently in view.
-  ───────────────────────────────────── */
+  /* 1 — Nav active link */
   const sections = document.querySelectorAll('section[id]');
-  const navLinks = document.querySelectorAll('.nav-links a');
-
+  const navAs    = document.querySelectorAll('.nav-links a');
   window.addEventListener('scroll', () => {
-    const scrollY = window.scrollY + 80;
-
-    sections.forEach(section => {
-      const top    = section.offsetTop;
-      const bottom = top + section.offsetHeight;
-
-      if (scrollY >= top && scrollY < bottom) {
-        navLinks.forEach(link => {
-          const isActive = link.getAttribute('href') === '#' + section.id;
-          link.classList.toggle('active', isActive);
-        });
-      }
+    const y = window.scrollY + 80;
+    sections.forEach(s => {
+      if (y >= s.offsetTop && y < s.offsetTop + s.offsetHeight)
+        navAs.forEach(a => a.classList.toggle('active', a.getAttribute('href') === '#' + s.id));
     });
   }, { passive: true });
 
+  /* 2 — Scroll reveal */
+  const obs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (!e.isIntersecting) return;
+      e.target.classList.add('on');
+      const bar = e.target.querySelector('.sk-fill');
+      if (bar) setTimeout(() => { bar.style.width = (e.target.dataset.pct || 0) + '%'; }, 220);
+      obs.unobserve(e.target);
+    });
+  }, { threshold: 0.1, rootMargin: '0px 0px -28px 0px' });
 
-  /* ─────────────────────────────────────
-     3. SMOOTH SCROLL
-     Intercepts anchor clicks and scrolls
-     smoothly to the target section.
-  ───────────────────────────────────── */
-  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-    anchor.addEventListener('click', (e) => {
-      const target = document.querySelector(anchor.getAttribute('href'));
-      if (target) {
-        e.preventDefault();
-        target.scrollIntoView({ behavior: 'smooth' });
-      }
+  document.querySelectorAll('[data-r]').forEach(el => {
+    const kids = Array.from(el.parentElement.querySelectorAll(':scope > [data-r]'));
+    if (kids.length > 1) el.style.transitionDelay = (kids.indexOf(el) * 0.1) + 's';
+    obs.observe(el);
+  });
+
+  /* 3 — Smooth scroll */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    a.addEventListener('click', e => {
+      const t = document.querySelector(a.getAttribute('href'));
+      if (t) { e.preventDefault(); window.scrollTo({ top: t.offsetTop - 64, behavior: 'smooth' }); }
     });
   });
 
